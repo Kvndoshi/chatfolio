@@ -14,7 +14,7 @@ node_modules/
 *.map
 
 # Screenshots (not needed in npm package)
-ss*.png
+assets/
 
 # Setup files
 GITHUB_SETUP.md

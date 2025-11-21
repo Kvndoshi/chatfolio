@@ -19,17 +19,17 @@ Recruiters can ask the AI about:
 ## 📸 Before & After
 
 ### Before (Without ChatFolio)
-![Portfolio without AI](./ss1.png)
+![Portfolio without AI](./assets/screenshots/ss1.png)
 
 *Static portfolio - recruiters have to read everything manually*
 
 ### After (With ChatFolio)
-![Portfolio with AI](./ss2.png)
+![Portfolio with AI](./assets/screenshots/ss2.png)
 
 *Interactive AI chat - recruiters ask questions and get instant answers*
 
 ### Demo: AI with Memory Access
-![AI Memory Demo](./ss3.png)
+![AI Memory Demo](./assets/screenshots/ss3.png)
 
 *The AI has access to your resume and can answer questions about your background, projects, and skills*
 
