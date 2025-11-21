@@ -1,8 +1,8 @@
-# PortfolioSDK
+# ChatFolio
 
 **Add AI-powered chat to your portfolio in 1 line of code.**
 
-## 🎯 Why PortfolioSDK?
+## 🎯 Why ChatFolio?
 
 Recruiters can ask the AI about:
 - ✅ **Your background** - Experience, education, skills
@@ -12,18 +12,18 @@ Recruiters can ask the AI about:
 
 **No more scrolling through resumes** - recruiters get instant, accurate answers about you!
 
-> **💡 Note:** While designed for portfolios, you can integrate PortfolioSDK into **any application**! Connect it to your data source (documents, database, API) and let users ask questions about your content. Perfect for documentation sites, knowledge bases, customer support, and more.
+> **💡 Note:** While designed for portfolios, you can integrate ChatFolio into **any application**! Connect it to your data source (documents, database, API) and let users ask questions about your content. Perfect for documentation sites, knowledge bases, customer support, and more.
 
 ---
 
 ## 📸 Before & After
 
-### Before (Without PortfolioSDK)
+### Before (Without ChatFolio)
 ![Portfolio without AI](./ss1.png)
 
 *Static portfolio - recruiters have to read everything manually*
 
-### After (With PortfolioSDK)
+### After (With ChatFolio)
 ![Portfolio with AI](./ss2.png)
 
 *Interactive AI chat - recruiters ask questions and get instant answers*
@@ -40,7 +40,7 @@ Recruiters can ask the AI about:
 ### Step 1: Install
 
 ```bash
-npm install portfoliosdk
+npm install chatfolio
 ```
 
 ### Step 2: Frontend - Add AutoChat Component
@@ -48,7 +48,7 @@ npm install portfoliosdk
 In your `page.tsx` (or any React component):
 
 ```tsx
-import { AutoChat } from 'portfoliosdk'
+import { AutoChat } from 'chatfolio'
 
 export default function Home() {
   return (
@@ -73,7 +73,7 @@ export default function Home() {
 Create `app/api/chat/route.ts` (Next.js) or your API endpoint:
 
 ```typescript
-import { createBackendHandler } from 'portfoliosdk/server'
+import { createBackendHandler } from 'chatfolio/server'
 
 export const { POST, GET } = createBackendHandler({
   // LLM Provider (choose one)
@@ -130,7 +130,7 @@ If you prefer to upload via code:
 
 ```typescript
 // app/api/upload/route.ts
-import { uploadToSupermemory } from 'portfoliosdk/server'
+import { uploadToSupermemory } from 'chatfolio/server'
 
 export async function POST(req: Request) {
   const formData = await req.formData()
@@ -446,7 +446,7 @@ Having issues? Open a GitHub issue or check the documentation.
 
 ## 📋 Roadmap & TODO
 
-See [GitHub Issues](https://github.com/Kvndoshi/portfolio-sdk/issues) for the complete TODO list, including:
+See [GitHub Issues](https://github.com/Kvndoshi/chatfolio/issues) for the complete TODO list, including:
 - OpenRouter conversation memory improvements
 - More chat UI templates
 - Vanilla JavaScript implementation

@@ -1,5 +1,5 @@
 /**
- * Core types for PortfolioSDK
+ * Core types for ChatFolio
  */
 
 export interface ChatMessage {

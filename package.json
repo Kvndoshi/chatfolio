@@ -1,7 +1,7 @@
 {
-  "name": "portfoliosdk",
+  "name": "chatfolio",
   "version": "1.0.0",
-  "description": "A clean SDK for adding LLM-powered chat with Supermemory to your portfolio",
+  "description": "Add AI-powered chat to your portfolio in 1 line of code",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "exports": {

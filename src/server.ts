@@ -1,5 +1,5 @@
 /**
- * PortfolioSDK server-side exports
+ * ChatFolio server-side exports
  * These utilities are intended for Next.js Route Handlers / API routes.
  */
 

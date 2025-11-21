@@ -3,7 +3,7 @@
 ## Step 1: Create GitHub Repository
 
 1. Go to https://github.com/new
-2. Repository name: `portfolio-sdk`
+2. Repository name: `chatfolio`
 3. Description: "Add AI-powered chat to your portfolio in 1 line of code"
 4. Set to **Public** (or Private if you prefer)
 5. **DO NOT** initialize with README, .gitignore, or license (we already have these)
@@ -11,11 +11,11 @@
 
 ## Step 2: Push to GitHub
 
-Run these commands in the `portfoliosdk` directory:
+Run these commands in the `chatfolio` directory:
 
 ```bash
 # Add remote (replace YOUR_USERNAME with your GitHub username)
-git remote add origin https://github.com/YOUR_USERNAME/portfolio-sdk.git
+git remote add origin https://github.com/YOUR_USERNAME/chatfolio.git
 
 # Rename branch to main (if needed)
 git branch -M main
@@ -28,7 +28,7 @@ git push -u origin main
 
 After pushing, create GitHub Issues for each TODO item:
 
-1. Go to https://github.com/YOUR_USERNAME/portfolio-sdk/issues
+1. Go to https://github.com/YOUR_USERNAME/chatfolio/issues
 2. Click "New Issue"
 3. Use the TODO items from `.github/ISSUE_TEMPLATE/todo.md` as reference
 

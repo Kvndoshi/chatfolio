@@ -1,7 +1,7 @@
 /**
  * BACKEND HANDLER (Recommended)
  * 
- * The main backend handler for PortfolioSDK.
+ * The main backend handler for ChatFolio.
  * Combines the best of both worlds:
  * - Manual RAG: Only FETCHES from Supermemory (no auto-saving)
  * - Memory Router: Multi-provider support + streaming
@@ -57,7 +57,7 @@ export function createBackendHandler(config: MemoryRouterConfig) {
           apiKey: config.llmApiKey,
           baseURL: 'https://openrouter.ai/api/v1',
           headers: {
-            'HTTP-Referer': config.openRouterReferer || 'https://portfolio-sdk.com',
+            'HTTP-Referer': config.openRouterReferer || 'https://chatfolio.com',
             'X-Title': config.openRouterTitle || 'Portfolio Chat'
           }
         })(model)

@@ -1,7 +1,7 @@
 'use client'
 
 /**
- * PortfolioSDK client exports
+ * ChatFolio client exports
  * These are safe to use inside Next.js Client Components.
  */
 

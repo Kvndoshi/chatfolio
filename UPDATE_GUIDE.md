@@ -1,4 +1,4 @@
-# How to Update PortfolioSDK on NPM
+# How to Update ChatFolio on NPM
 
 ## Quick Update Workflow
 
@@ -52,7 +52,7 @@ npm run build
 ### Step 3: Test Locally (Optional)
 ```bash
 # In demo-portfolio
-npm install ../portfoliosdk
+npm install ../chatfolio
 ```
 
 ### Step 4: Commit
@@ -113,10 +113,10 @@ Follow [Semantic Versioning](https://semver.org/):
 # 2. Test locally
 npm run build
 cd ../demo-portfolio
-npm install ../portfoliosdk
+npm install ../chatfolio
 
 # 3. If everything works, publish
-cd ../portfoliosdk
+cd ../chatfolio
 npm run version:minor  # Bumps 1.0.0 → 1.1.0
 npm run release       # Builds and publishes
 
@@ -131,9 +131,9 @@ git push --follow-tags
 After you publish, users update with:
 
 ```bash
-npm install portfoliosdk@latest
+npm install chatfolio@latest
 # OR
-npm update portfoliosdk
+npm update chatfolio
 ```
 
 ---
@@ -154,7 +154,7 @@ npm publish --access public
 
 ### "Package name already exists"
 - Check if someone else has the name
-- You might need a scoped package: `@yourusername/portfoliosdk`
+- You might need a scoped package: `@yourusername/chatfolio`
 
 ### "You must verify your email"
 - Verify your email on npmjs.com

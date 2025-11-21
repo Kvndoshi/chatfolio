@@ -13,7 +13,7 @@
  * - OpenRouter (hundreds of models)
  * 
  * Usage:
- *   import { createPortfolioHandler } from 'portfoliosdk/server'
+ *   import { createPortfolioHandler } from 'chatfolio/server'
  * 
  *   export const { POST, GET } = createPortfolioHandler({
  *     llmProvider: 'anthropic',
