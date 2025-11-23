@@ -67,6 +67,9 @@ export interface AutoChatProps {
   
   // === Thinking Indicator ===
   thinkingDotColor?: string            // Color of thinking dots (default: '#9ca3af')
+  
+  // === Markdown Rendering ===
+  renderMarkdown?: boolean             // Render markdown in messages (default: false)
 }
 
 const generateSessionId = () => {
@@ -83,12 +86,52 @@ const generateSessionId = () => {
  * Expands smoothly upward to show conversation
  * Collapses on outside click, preserves history on re-expand
  */
+// Simple markdown parser for **bold**, *italic*, etc.
+const parseMarkdown = (text: string): string => {
+  if (!text) return ''
+  
+  console.log('[parseMarkdown] Input:', text.substring(0, 200))
+  
+  // Escape HTML first to prevent XSS
+  let html = text
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+  
+  console.log('[parseMarkdown] After HTML escape:', html.substring(0, 200))
+  
+  // Now apply markdown - the order matters!
+  // Bold: **text** (must come before single * for italic)
+  html = html.replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>')
+  
+  // Bold: __text__ (must come before single _ for italic)
+  html = html.replace(/__(.+?)__/g, '<strong>$1</strong>')
+  
+  // Code: `code` (backticks)
+  html = html.replace(/`([^`]+?)`/g, '<code>$1</code>')
+  
+  // Italic: *text* (single asterisk)
+  html = html.replace(/\*(.+?)\*/g, '<em>$1</em>')
+  
+  // Italic: _text_ (single underscore) - use word boundaries
+  html = html.replace(/\b_(.+?)_\b/g, '<em>$1</em>')
+  
+  // Line breaks
+  html = html.replace(/\n/g, '<br />')
+  
+  console.log('[parseMarkdown] Final output:', html.substring(0, 200))
+  console.log('[parseMarkdown] Contains <strong>:', html.includes('<strong>'))
+  
+  return html
+}
+
 export const AutoChat: React.FC<AutoChatProps> = ({
   // API & Behavior
   apiPath = '/api/chat',
   placeholder = 'Ask me anything...',
   className = '',
   collapseOnOutsideClick = false,
+  renderMarkdown = true,  // Default to true for markdown support
   
   // Layout & Sizing
   inputHeight = '56px',
@@ -251,46 +294,12 @@ export const AutoChat: React.FC<AutoChatProps> = ({
         if (reader) {
           let streamedContent = ''
           let chunkCount = 0
+          let lastUpdateTime = 0
+          const UPDATE_THROTTLE = 50 // Update UI every 50ms max
           
           console.log('[AutoChat] Starting to read stream...')
           
-          try {
-            while (true) {
-              const { done, value } = await reader.read()
-              if (done) {
-                console.log('[AutoChat] Stream complete. Total chunks:', chunkCount, 'Content length:', streamedContent.length)
-                break
-              }
-              
-              chunkCount++
-              const chunk = decoder.decode(value, { stream: true })
-              console.log(`[AutoChat] Chunk ${chunkCount}:`, chunk)
-              
-              // Just append the raw chunk - toTextStreamResponse() sends plain text
-              streamedContent += chunk
-              
-              // Update UI with accumulated content
-              console.log('[AutoChat] Updating UI with content length:', streamedContent.length)
-              setMessages(prev => {
-                const newMessages = [...prev]
-                newMessages[newMessages.length - 1] = {
-                  role: 'assistant',
-                  content: streamedContent,
-                  timestamp: Date.now()
-                }
-                return newMessages
-              })
-            }
-          } catch (streamError) {
-            console.error('[AutoChat] Stream reading error:', streamError)
-          }
-          
-          console.log('[AutoChat] Final content length:', streamedContent.length)
-          console.log('[AutoChat] Final content preview:', streamedContent.substring(0, 200))
-          
-          // Final update with complete content
-          if (streamedContent) {
-            console.log('[AutoChat] ✅ Stream completed successfully')
+          const updateUI = () => {
             setMessages(prev => {
               const newMessages = [...prev]
               newMessages[newMessages.length - 1] = {
@@ -300,6 +309,43 @@ export const AutoChat: React.FC<AutoChatProps> = ({
               }
               return newMessages
             })
+          }
+          
+          try {
+            while (true) {
+              const { done, value } = await reader.read()
+              if (done) {
+                console.log('[AutoChat] Stream complete. Total chunks:', chunkCount, 'Content length:', streamedContent.length)
+                // Final update
+                updateUI()
+                break
+              }
+              
+              chunkCount++
+              const chunk = decoder.decode(value, { stream: true })
+              console.log(`[AutoChat] Chunk ${chunkCount}:`, chunk.substring(0, 50))
+              
+              // Append the raw chunk - toTextStreamResponse() sends plain text
+              streamedContent += chunk
+              
+              // Throttle UI updates for smoother streaming
+              const now = Date.now()
+              if (now - lastUpdateTime >= UPDATE_THROTTLE) {
+                updateUI()
+                lastUpdateTime = now
+              }
+            }
+          } catch (streamError) {
+            console.error('[AutoChat] Stream reading error:', streamError)
+          }
+          
+          console.log('[AutoChat] Final content length:', streamedContent.length)
+          console.log('[AutoChat] Final content preview:', streamedContent.substring(0, 200))
+          
+          // Ensure final update (in case throttling skipped it)
+          if (streamedContent) {
+            console.log('[AutoChat] ✅ Stream completed successfully')
+            updateUI()
           } else {
             console.error('[AutoChat] ⚠️ NO CONTENT RECEIVED!')
           }
@@ -452,6 +498,36 @@ export const AutoChat: React.FC<AutoChatProps> = ({
           white-space: pre-wrap;
           word-wrap: break-word;
           font-size: ${fontSize};
+        }
+
+        .autochat-bubble strong {
+          font-weight: 700 !important;
+          font-weight: bold !important;
+          display: inline !important;
+        }
+        
+        .autochat-message.assistant .autochat-bubble strong {
+          font-weight: 700 !important;
+          font-weight: bold !important;
+          color: ${assistantMessageTextColor} !important;
+        }
+        
+        .autochat-message.user .autochat-bubble strong {
+          font-weight: 700 !important;
+          font-weight: bold !important;
+          color: ${userMessageTextColor} !important;
+        }
+
+        .autochat-bubble em {
+          font-style: italic !important;
+        }
+
+        .autochat-bubble code {
+          background: rgba(0, 0, 0, 0.1);
+          padding: 2px 6px;
+          border-radius: 4px;
+          font-family: 'Courier New', monospace;
+          font-size: 0.9em;
         }
 
         .autochat-message.user .autochat-bubble {
@@ -614,13 +690,45 @@ export const AutoChat: React.FC<AutoChatProps> = ({
       <div className={`autochat-container ${isExpanded ? 'expanded' : ''}`}>
         {isExpanded && messages.length > 0 && (
           <div ref={messagesRef} className="autochat-messages">
-            {messages.map((msg, idx) => (
-              <div key={idx} className={`autochat-message ${msg.role}`}>
-                <div className={`autochat-bubble ${msg.content === '●●●' ? 'thinking' : ''}`}>
-                  {msg.content === '●●●' ? '' : msg.content}
+            {messages.map((msg, idx) => {
+              const isAssistant = msg.role === 'assistant'
+              const isThinking = msg.content === '●●●'
+              const shouldRenderMarkdown = renderMarkdown && isAssistant && !isThinking
+              
+              if (shouldRenderMarkdown) {
+                const parsed = parseMarkdown(msg.content)
+                // Log to verify HTML is correct
+                if (msg.content.includes('**')) {
+                  console.log('[AutoChat] 🎨 Rendering with markdown!')
+                  console.log('[AutoChat] Original:', msg.content)
+                  console.log('[AutoChat] Parsed HTML:', parsed)
+                  console.log('[AutoChat] Contains <strong>:', parsed.includes('<strong>'))
+                }
+                
+                return (
+                  <div key={idx} className={`autochat-message ${msg.role}`}>
+                    <div 
+                      className="autochat-bubble"
+                      dangerouslySetInnerHTML={{ __html: parsed }}
+                    />
+                  </div>
+                )
+              }
+              
+              // Log when markdown is NOT being used
+              if (isAssistant && !isThinking) {
+                console.log('[AutoChat] ⚠️ Markdown NOT enabled for assistant message')
+                console.log('[AutoChat] renderMarkdown:', renderMarkdown)
+              }
+              
+              return (
+                <div key={idx} className={`autochat-message ${msg.role}`}>
+                  <div className={`autochat-bubble ${isThinking ? 'thinking' : ''}`}>
+                    {isThinking ? '' : msg.content}
+                  </div>
                 </div>
-              </div>
-            ))}
+              )
+            })}
             <div ref={bottomRef} />
           </div>
         )}
